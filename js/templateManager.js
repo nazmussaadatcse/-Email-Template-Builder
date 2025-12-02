@@ -112,7 +112,7 @@ class TemplateManager {
       if (nameInput) {
         nameInput.value = template.name;
         // Trigger input event to update char count
-        nameInput.dispatchEvent(new Event('input'));
+        nameInput.dispatchEvent(new Event("input"));
       }
       this.loadTemplateData(template.data);
       this.closeDropdown();
@@ -120,51 +120,6 @@ class TemplateManager {
     }
   }
 
-  // Load template data into editor
-  loadTemplateData(data) {
-    // Set basic fields
-    document.getElementById("titleInput").value = data.title || "";
-    document.getElementById("buttonTextInput").value = data.buttonText || "";
-    document.getElementById("buttonLinkInput").value = data.buttonLink || "";
-
-    // Set body text
-    if (window.setEditorContent && data.body) {
-      window.setEditorContent(data.body);
-    } else {
-      // Fallback for textarea
-      const bodyInput = document.getElementById("bodyInput");
-      if (bodyInput && data.body) {
-        bodyInput.value = data.body;
-      }
-    }
-
-    // Set image
-    document.getElementById("imageSelect").value = data.imageSelect || "";
-    document.getElementById("imageUpload").value = "";
-
-    // Set uploaded image if exists
-    if (data.uploadedImageBase64) {
-      if (window.setUploadedImage) {
-        window.setUploadedImage(data.uploadedImageBase64);
-      } else {
-        window.uploadedImageBase64 = data.uploadedImageBase64;
-      }
-    } else {
-      if (window.setUploadedImage) {
-        window.setUploadedImage("");
-      } else {
-        window.uploadedImageBase64 = "";
-      }
-    }
-
-    // Update preview
-    if (typeof window.updatePreview === "function") {
-      window.updatePreview();
-    }
-    if (typeof window.updateBodyPreview === "function") {
-      window.updateBodyPreview();
-    }
-  }
 
   // Render templates list
   // Render templates list
@@ -395,6 +350,123 @@ class TemplateManager {
         const remaining = 50 - templateNameInput.value.length;
         charCount.textContent = remaining;
       });
+    }
+  }
+
+  // Load template data into editor
+  loadTemplateData(data) {
+    console.log("Loading template data:", data);
+
+    // Set basic fields
+    document.getElementById("titleInput").value = data.title || "";
+    document.getElementById("buttonTextInput").value = data.buttonText || "";
+    document.getElementById("buttonLinkInput").value = data.buttonLink || "";
+
+    // Set body text
+    if (window.setEditorContent && data.body) {
+      window.setEditorContent(data.body);
+    } else {
+      // Fallback for textarea
+      const bodyInput = document.getElementById("bodyInput");
+      if (bodyInput && data.body) {
+        bodyInput.value = data.body;
+      }
+    }
+
+    // Set image selection
+    document.getElementById("imageSelect").value = data.imageSelect || "";
+    document.getElementById("imageUpload").value = "";
+
+    // Set uploaded image if exists
+    if (data.uploadedImageBase64) {
+      console.log(
+        "Setting uploaded image base64, length:",
+        data.uploadedImageBase64.length
+      );
+      window.uploadedImageBase64 = data.uploadedImageBase64;
+
+      // Update preview image directly
+      const previewImage = document.querySelector(".preview-image");
+      if (previewImage) {
+        previewImage.src = data.uploadedImageBase64;
+        previewImage.className = "preview-image";
+        previewImage.style.display = "block";
+
+        // Show remove button
+        const removeBtn = document.getElementById("removeImageBtn");
+        if (removeBtn) {
+          removeBtn.style.display = "block";
+        } else {
+          // Create remove button if it doesn't exist
+          const newRemoveBtn = document.createElement("button");
+          newRemoveBtn.textContent = "Remove Image";
+          newRemoveBtn.id = "removeImageBtn";
+          newRemoveBtn.className = "btn-remove-image";
+          newRemoveBtn.addEventListener("click", () => {
+            // You'll need to expose a global function for this
+            if (window.removeImage) {
+              window.removeImage();
+            }
+          });
+          previewImage.insertAdjacentElement("afterend", newRemoveBtn);
+        }
+      }
+    } else {
+      window.uploadedImageBase64 = "";
+    }
+
+    // Show upload wrapper if there's an image
+    const uploadWrapper = document.getElementById("uploadWrapper");
+    if (uploadWrapper) {
+      if (data.imageSelect || data.uploadedImageBase64) {
+        uploadWrapper.style.display = "block";
+      } else {
+        uploadWrapper.style.display = "none";
+      }
+    }
+
+    // Update previews
+    if (typeof window.updatePreview === "function") {
+      window.updatePreview();
+    }
+    if (typeof window.updateBodyPreview === "function") {
+      window.updateBodyPreview();
+    }
+
+    // Specifically update image preview
+    if (typeof window.updateImagePreview === "function") {
+      window.updateImagePreview();
+    } else {
+      // Fallback if function doesn't exist
+      this.updatePreviewImageDirectly(data);
+    }
+  }
+
+  // Helper function to update preview image directly
+  updatePreviewImageDirectly(data) {
+    const previewImage = document.querySelector(".preview-image");
+    if (!previewImage) return;
+
+    if (data.uploadedImageBase64) {
+      previewImage.src = data.uploadedImageBase64;
+      previewImage.className = "preview-image";
+      previewImage.style.display = "block";
+    } else if (data.imageSelect) {
+      const images = {
+        img1: "https://via.placeholder.com/400x150?text=Image+1",
+        img2: "https://via.placeholder.com/400x150?text=Image+2",
+        img3: "https://via.placeholder.com/400x150?text=Image+3",
+      };
+
+      if (images[data.imageSelect]) {
+        previewImage.src = images[data.imageSelect];
+        previewImage.className = "preview-image";
+        previewImage.style.display = "block";
+      }
+    } else {
+      previewImage.src = "";
+      previewImage.className = "preview-image placeholder";
+      previewImage.style.display = "none";
     }
   }
 

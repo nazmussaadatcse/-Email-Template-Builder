@@ -40,20 +40,65 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function hideRemoveBtn() {
-    if (removeBtn) removeBtn.style.display = "none";
+    const removeBtn = document.getElementById("removeImageBtn");
+    if (removeBtn) {
+      removeBtn.style.display = "none";
+    }
+  }
+
+  // download button event listener
+  const downloadBtn = document.getElementById("downloadBtn");
+  if (downloadBtn) {
+    console.log("Adding download button listener in builder.js");
+    downloadBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Download button clicked from builder.js");
+
+      // Call template manager download function
+      if (
+        window.templateManager &&
+        window.templateManager.downloadCurrentTemplate
+      ) {
+        window.templateManager.downloadCurrentTemplate();
+      } else {
+        console.error("Template manager not available");
+        alert("Template manager not available. Please save a template first.");
+      }
+    });
+  } else {
+    console.error("Download button not found!");
   }
 
   function showRemoveBtn() {
+    // Check if button already exists
+    let removeBtn = document.getElementById("removeImageBtn");
+
     if (!removeBtn) {
       removeBtn = document.createElement("button");
       removeBtn.textContent = "Remove Image";
       removeBtn.id = "removeImageBtn";
       removeBtn.className = "btn-remove-image";
 
-      previewImage.insertAdjacentElement("afterend", removeBtn);
+      // Add after the preview image
+      const previewImage = document.querySelector(".preview-image");
+      if (previewImage && previewImage.parentNode) {
+        previewImage.parentNode.insertBefore(
+          removeBtn,
+          previewImage.nextSibling
+        );
+      } else {
+        previewImage.insertAdjacentElement("afterend", removeBtn);
+      }
+
       removeBtn.addEventListener("click", removeImage);
     }
+
+    // Always show it
     removeBtn.style.display = "block";
+
+    // Update the global reference
+    window.removeBtnRef = removeBtn;
   }
 
   function removeImage() {
@@ -215,33 +260,33 @@ document.addEventListener("DOMContentLoaded", () => {
       fontSizeSelect.addEventListener("change", function () {
         if (this.value) {
           const size = this.value;
-          
+
           // Focus editor
           if (document.activeElement !== richTextEditor) {
             richTextEditor.focus();
           }
-          
+
           // Save selection
           saveSelection();
-          
+
           // Apply font size using insertHTML method (more reliable)
           const selection = window.getSelection();
           if (selection.rangeCount > 0 && !selection.isCollapsed) {
             const range = selection.getRangeAt(0);
             const selectedText = range.toString();
-            
+
             if (selectedText) {
               // Create span with font size
-              const span = document.createElement('span');
+              const span = document.createElement("span");
               span.style.fontSize = size;
               span.textContent = selectedText;
-              
+
               // Delete selected content
               range.deleteContents();
-              
+
               // Insert styled span
               range.insertNode(span);
-              
+
               // Move cursor after the styled text
               const newRange = document.createRange();
               newRange.setStartAfter(span);
@@ -255,11 +300,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // Apply style to the editor itself
             richTextEditor.style.fontSize = size;
           }
-          
+
           // Update preview
           updateBodyPreview();
           this.value = "";
-          
+
           // Restore focus
           richTextEditor.focus();
         }
@@ -599,9 +644,9 @@ document.addEventListener("DOMContentLoaded", () => {
       uploadWrapper.style.display = "block";
     } else if (imageSelect.value) {
       const images = {
-        img1: "https://via.placeholder.com/400x150?text=Image+1",
-        img2: "https://via.placeholder.com/400x150?text=Image+2",
-        img3: "https://via.placeholder.com/400x150?text=Image+3",
+        img1: "https://via.placeholder.com/400x150/4F46E5/FFFFFF?text=Image+1",
+        img2: "https://via.placeholder.com/400x150/10B981/FFFFFF?text=Image+2",
+        img3: "https://via.placeholder.com/400x150/F59E0B/FFFFFF?text=Image+3",
       };
 
       previewImage.src = images[imageSelect.value];
@@ -622,7 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Character count for template name
   if (templateNameInput && charCount) {
-    templateNameInput.addEventListener("input", function() {
+    templateNameInput.addEventListener("input", function () {
       const remaining = 50 - this.value.length;
       charCount.textContent = remaining;
       charCount.style.color = remaining < 10 ? "#ef4444" : "#6b7280";
@@ -631,15 +676,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Save template button
   if (saveTemplateBtn) {
-    saveTemplateBtn.addEventListener("click", function() {
+    saveTemplateBtn.addEventListener("click", function () {
       const name = templateNameInput.value.trim();
-      
+
       if (!name) {
         alert("Please enter a template name");
         templateNameInput.focus();
         return;
       }
-      
+
       // Get template data and save it
       const templateData = getCurrentTemplateData();
       if (window.templateManager && window.templateManager.saveTemplate) {
@@ -693,15 +738,57 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Helper function to get current template data
+  // Helper function to get current template data
   function getCurrentTemplateData() {
-    return {
-      title: titleInput.value,
-      body: hiddenTextarea ? hiddenTextarea.value : "",
-      buttonText: buttonTextInput.value,
-      buttonLink: buttonLinkInput.value,
+    // Get current image source
+    let imageData = {
       imageSelect: imageSelect.value,
       uploadedImageBase64: uploadedImageBase64,
     };
+
+    // If we have an uploaded image, use it
+    if (uploadedImageBase64) {
+      return {
+        title: titleInput.value,
+        body: hiddenTextarea ? hiddenTextarea.value : "",
+        buttonText: buttonTextInput.value,
+        buttonLink: buttonLinkInput.value,
+        imageSelect: imageSelect.value,
+        uploadedImageBase64: uploadedImageBase64,
+        hasUploadedImage: true,
+      };
+    }
+    // If we selected an image from dropdown
+    else if (imageSelect.value) {
+      const images = {
+        img1: "https://via.placeholder.com/400x150?text=Image+1",
+        img2: "https://via.placeholder.com/400x150?text=Image+2",
+        img3: "https://via.placeholder.com/400x150?text=Image+3",
+      };
+
+      return {
+        title: titleInput.value,
+        body: hiddenTextarea ? hiddenTextarea.value : "",
+        buttonText: buttonTextInput.value,
+        buttonLink: buttonLinkInput.value,
+        imageSelect: imageSelect.value,
+        imageUrl: images[imageSelect.value],
+        uploadedImageBase64: "", // Empty for dropdown images
+        hasUploadedImage: false,
+      };
+    }
+    // No image
+    else {
+      return {
+        title: titleInput.value,
+        body: hiddenTextarea ? hiddenTextarea.value : "",
+        buttonText: buttonTextInput.value,
+        buttonLink: buttonLinkInput.value,
+        imageSelect: "",
+        uploadedImageBase64: "",
+        hasUploadedImage: false,
+      };
+    }
   }
 
   // ============ INITIALIZATION ============
