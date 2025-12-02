@@ -107,6 +107,13 @@ class TemplateManager {
     const template = this.templates.find((t) => t.id === id);
     if (template) {
       this.currentTemplateId = id;
+      // Set template name
+      const nameInput = document.getElementById("templateName");
+      if (nameInput) {
+        nameInput.value = template.name;
+        // Trigger input event to update char count
+        nameInput.dispatchEvent(new Event('input'));
+      }
       this.loadTemplateData(template.data);
       this.closeDropdown();
       this.showNotification(`Template "${template.name}" loaded!`);
@@ -137,9 +144,17 @@ class TemplateManager {
 
     // Set uploaded image if exists
     if (data.uploadedImageBase64) {
-      window.uploadedImageBase64 = data.uploadedImageBase64;
+      if (window.setUploadedImage) {
+        window.setUploadedImage(data.uploadedImageBase64);
+      } else {
+        window.uploadedImageBase64 = data.uploadedImageBase64;
+      }
     } else {
-      window.uploadedImageBase64 = "";
+      if (window.setUploadedImage) {
+        window.setUploadedImage("");
+      } else {
+        window.uploadedImageBase64 = "";
+      }
     }
 
     // Update preview
