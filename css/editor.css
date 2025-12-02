@@ -1,51 +1,33 @@
-/* =========================================
-   Editor Panel Styles
-========================================= */
-
 .editor {
-    width: 50%;
-    background: var(--color-white);
-    padding: 20px;
-    border-radius: var(--radius-base);
-    box-shadow: var(--shadow-base);
+  background: var(--card);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* Labels */
-.editor label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: bold;
-    font-size: 14px;
+.editor h2 {
+  margin-top: 0;
+  font-size: 18px;
 }
-
-/* Input - Text, Select & Textarea */
-.editor input,
-.editor textarea,
-.editor select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-base);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s ease;
+.form-group {
+  margin-bottom: 14px;
 }
-
-/* Input Focus State */
-.editor input:focus,
-.editor textarea:focus,
-.editor select:focus {
-    border-color: var(--color-primary);
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: var(--muted);
 }
-
-/* Textarea Specific */
-.editor textarea {
-    min-height: 90px;
-    resize: vertical;
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
 }
-
-/* Save Button Alignment */
-.btn-save {
-    margin-top: 10px;
-    width: 100%;
+textarea {
+  resize: vertical;
 }

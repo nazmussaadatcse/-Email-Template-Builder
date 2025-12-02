@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Template Builder</title>
 
-    <!-- CSS Files -->
+    <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/editor.css" />
     <link rel="stylesheet" href="css/preview.css" />
@@ -17,8 +17,8 @@
       </header>
 
       <section class="builder-wrapper">
-        <!-- Editor Section -->
-        <section class="editor">
+        <!-- Editor -->
+        <aside class="editor">
           <h2 class="section-title">Editor</h2>
 
           <div class="form-group">
@@ -59,10 +59,18 @@
             </select>
           </div>
 
-          <button class="btn-save">Save Template</button>
-        </section>
+          <div class="form-group">
+            <label for="imageUpload">Upload Image</label>
+            <input type="file" id="imageUpload" accept="image/*" />
+          </div>
 
-        <!-- Preview Section -->
+          <div class="actions">
+            <button id="saveTemplateBtn" class="btn-save">Save Template</button>
+            <button id="resetBtn" class="btn-reset">Reset</button>
+          </div>
+        </aside>
+
+        <!-- Preview -->
         <section class="preview">
           <h2 class="section-title">Preview</h2>
 
@@ -76,7 +84,7 @@
       </section>
     </main>
 
-    <!-- JS Files -->
+    <!-- JS -->
     <script src="js/previewActions.js"></script>
     <script src="js/editorActions.js"></script>
     <script src="js/index.js"></script>

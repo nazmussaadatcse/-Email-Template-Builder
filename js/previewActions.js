@@ -1,33 +1,50 @@
 const PreviewActions = (function () {
-    let titleEl, bodyEl, buttonEl, imageEl;
+  let titleEl, bodyEl, buttonEl, imageEl;
+  let uploadedImage = "";
 
-    function init() {
-        titleEl = document.querySelector(".preview-title");
-        bodyEl = document.querySelector(".preview-body");
-        buttonEl = document.querySelector(".preview-button");
-        imageEl = document.querySelector(".preview-image");
-    }
+  function init() {
+    titleEl = document.querySelector(".preview-title");
+    bodyEl = document.querySelector(".preview-body");
+    buttonEl = document.querySelector(".preview-button");
+    imageEl = document.querySelector(".preview-image");
+  }
 
-    function updateTitle(e) { if(titleEl) titleEl.textContent = e.target.value || "Your Title Here"; }
-    function updateBody(e) { if(bodyEl) bodyEl.textContent = e.target.value || "Your email body text will appear here."; }
-    function updateButtonText(e) { if(buttonEl) buttonEl.textContent = e.target.value || "Button"; }
-    function updateButtonLink(e) { if(buttonEl) buttonEl.href = e.target.value || "#"; }
-    function updateImage(e) {
-        if(!imageEl) return;
-        const images = {
-            img1: "https://via.placeholder.com/250?text=Image+1",
-            img2: "https://via.placeholder.com/250?text=Image+2",
-            img3: "https://via.placeholder.com/250?text=Image+3"
-        };
-        imageEl.src = images[e.target.value] || "";
-    }
+  function updateTitle(val) {
+    if (titleEl) titleEl.textContent = val || "Your Title Here";
+  }
+  function updateBody(val) {
+    if (bodyEl)
+      bodyEl.textContent = val || "Your email body text will appear here.";
+  }
+  function updateButtonText(val) {
+    if (buttonEl) buttonEl.textContent = val || "Button";
+  }
+  function updateButtonLink(val) {
+    if (buttonEl) buttonEl.href = val || "#";
+  }
+  function updateImageSrc(src) {
+    if (imageEl) imageEl.src = src || "";
+    uploadedImage = src || "";
+  }
 
-    return {
-        init,
-        updateTitle,
-        updateBody,
-        updateButtonText,
-        updateButtonLink,
-        updateImage
-    };
+  function getLastHtml() {
+    return `
+      <div style="text-align:center;">
+        <h3>${titleEl.textContent}</h3>
+        <img src="${uploadedImage}" style="max-width:100%;border-radius:6px;" />
+        <p>${bodyEl.textContent}</p>
+        <a href="${buttonEl.href}" target="_blank">${buttonEl.textContent}</a>
+      </div>
+    `;
+  }
+
+  return {
+    init,
+    updateTitle,
+    updateBody,
+    updateButtonText,
+    updateButtonLink,
+    updateImageSrc,
+    getLastHtml,
+  };
 })();
