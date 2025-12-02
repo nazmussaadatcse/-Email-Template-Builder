@@ -1,88 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Template Builder</title>
 
     <!-- CSS Files -->
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/editor.css">
-    <link rel="stylesheet" href="css/preview.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/editor.css" />
+    <link rel="stylesheet" href="css/preview.css" />
+  </head>
+  <body>
     <main class="container">
+      <header class="header">
+        <h1>Email Template Builder</h1>
+      </header>
 
-        <header class="header">
-            <h1>Email Template Builder</h1>
-        </header>
+      <section class="builder-wrapper">
+        <!-- Editor Section -->
+        <section class="editor">
+          <h2 class="section-title">Editor</h2>
 
-        <section class="builder-wrapper">
+          <div class="form-group">
+            <label for="titleInput">Title</label>
+            <input id="titleInput" type="text" placeholder="Enter title" />
+          </div>
 
-            <!-- Editor Section -->
-            <section class="editor">
-                <h2 class="section-title">Editor</h2>
+          <div class="form-group">
+            <label for="bodyInput">Body Text</label>
+            <textarea id="bodyInput" placeholder="Enter email body"></textarea>
+          </div>
 
-                <div class="form-group">
-                    <label for="titleInput">Title</label>
-                    <input id="titleInput" type="text" placeholder="Enter title">
-                </div>
+          <div class="form-group">
+            <label for="buttonTextInput">Button Text</label>
+            <input
+              id="buttonTextInput"
+              type="text"
+              placeholder="Enter button text"
+            />
+          </div>
 
-                <div class="form-group">
-                    <label for="bodyInput">Body Text</label>
-                    <textarea id="bodyInput" placeholder="Enter email body"></textarea>
-                </div>
+          <div class="form-group">
+            <label for="buttonLinkInput">Button Link</label>
+            <input
+              id="buttonLinkInput"
+              type="text"
+              placeholder="Enter button link URL"
+            />
+          </div>
 
-                <div class="form-group">
-                    <label for="buttonTextInput">Button Text</label>
-                    <input id="buttonTextInput" type="text" placeholder="Enter button text">
-                </div>
+          <div class="form-group">
+            <label for="imageSelect">Select Image</label>
+            <select id="imageSelect">
+              <option value="">Choose an image</option>
+              <option value="img1">Image 1</option>
+              <option value="img2">Image 2</option>
+              <option value="img3">Image 3</option>
+            </select>
+          </div>
 
-                <div class="form-group">
-                    <label for="buttonLinkInput">Button Link</label>
-                    <input id="buttonLinkInput" type="text" placeholder="Enter button link URL">
-                </div>
-
-                <div class="form-group">
-                    <label for="imageSelect">Select Image</label>
-                    <select id="imageSelect">
-                        <option value="">Choose an image</option>
-                        <option value="img1">Image 1</option>
-                        <option value="img2">Image 2</option>
-                        <option value="img3">Image 3</option>
-                    </select>
-                </div>
-
-                <button class="btn-save">Save Template</button>
-            </section>
-
-            <!-- Preview Section -->
-            <section class="preview">
-                <h2 class="section-title">Preview</h2>
-
-                <div class="email-preview">
-                    <h3 class="preview-title">Your Title Here</h3>
-
-                    <img class="preview-image" src="" alt="Selected Image Preview">
-
-                    <p class="preview-body">
-                        Your email body text will appear here.
-                    </p>
-
-                    <a class="preview-button" href="#" target="_blank">
-                        Button
-                    </a>
-                </div>
-            </section>
-
+          <button class="btn-save">Save Template</button>
         </section>
 
+        <!-- Preview Section -->
+        <section class="preview">
+          <h2 class="section-title">Preview</h2>
+
+          <div class="email-preview">
+            <h3 class="preview-title">Your Title Here</h3>
+            <img class="preview-image" src="" alt="Selected Image Preview" />
+            <p class="preview-body">Your email body text will appear here.</p>
+            <a class="preview-button" href="#" target="_blank">Button</a>
+          </div>
+        </section>
+      </section>
     </main>
 
     <!-- JS Files -->
-    <script src="js/index.js"></script>
-    <script src="js/editorActions.js"></script>
     <script src="js/previewActions.js"></script>
-</body>
+    <script src="js/editorActions.js"></script>
+    <script src="js/index.js"></script>
+  </body>
 </html>
