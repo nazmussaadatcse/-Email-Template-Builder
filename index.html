@@ -4,23 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Email Template Builder</title>
-
-    <!-- CSS -->
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/editor.css" />
     <link rel="stylesheet" href="css/preview.css" />
   </head>
   <body>
     <main class="container">
-      <header class="header">
-        <h1>Email Template Builder</h1>
-      </header>
+      <header class="header"><h1>Email Template Builder</h1></header>
 
       <section class="builder-wrapper">
         <!-- Editor -->
         <aside class="editor">
           <h2 class="section-title">Editor</h2>
-
           <div class="form-group">
             <label for="titleInput">Title</label>
             <input id="titleInput" type="text" placeholder="Enter title" />
@@ -65,15 +60,14 @@
           </div>
 
           <div class="actions">
-            <button id="saveTemplateBtn" class="btn-save">Save Template</button>
-            <button id="resetBtn" class="btn-reset">Reset</button>
+            <button id="saveTemplateBtn">Save Template</button>
+            <button id="resetBtn">Reset</button>
           </div>
         </aside>
 
         <!-- Preview -->
         <section class="preview">
           <h2 class="section-title">Preview</h2>
-
           <div class="email-preview">
             <h3 class="preview-title">Your Title Here</h3>
             <img class="preview-image" src="" alt="Selected Image Preview" />
@@ -84,9 +78,6 @@
       </section>
     </main>
 
-    <!-- JS -->
-    <script src="js/previewActions.js"></script>
-    <script src="js/editorActions.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/builder.js"></script>
   </body>
 </html>
