@@ -1,49 +1,71 @@
-.preview h2 {
-  margin: 0 0 10px;
-  font-size: 16px;
-}
-
-.preview-title {
-  font-size: 20px;
-  margin-bottom: 10px;
-}
-.preview-body {
-  color: #374151;
-  font-size: 15px;
-  line-height: 1.5;
-  margin-bottom: 12px;
-}
-.preview-button {
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 6px;
-  text-decoration: none;
-  background: var(--accent);
-  color: white;
+/* Preview Card */
+.preview {
+  padding: 30px;
 }
 
 .email-preview {
-  background: #f8f9fb;
-  padding: 20px;
-  border-radius: 10px;
-  min-height: 400px;
-  border: 1px solid #e0e0e0;
-  overflow: auto;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Image placeholder & preview */
+.preview-title {
+  color: var(--gray-800);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--gray-100);
+}
+
 .preview-image {
-  display: block;
   width: 100%;
-  max-width: 400px;
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
-  margin: 10px 0;
-  background: #e5e7eb url("https://via.placeholder.com/400x200?text=Preview")
-    center center no-repeat;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  resize: both;
-  overflow: hidden;
+  margin: 20px 0;
+  background: var(--gray-100);
+  border: 2px dashed var(--gray-300);
+}
+
+.preview-image:not([src]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-400);
+  font-size: 14px;
+}
+
+.preview-body {
+  color: var(--gray-600);
+  line-height: 1.8;
+  margin: 20px 0;
+  padding: 20px;
+  background: var(--gray-50);
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  min-height: 150px;
+}
+
+.preview-button {
+  display: inline-block;
+  padding: 14px 28px;
+  background: var(--primary);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.preview-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }

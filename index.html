@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/editor.css" />
     <link rel="stylesheet" href="css/preview.css" />
-    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="css/templates.css" />
+    
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -15,33 +16,58 @@
   </head>
   <body>
     <main class="container">
-      <header class="header"><h1>Email Template Builder</h1></header>
+      <header class="header">
+        <div class="header-left">
+          <h1>📧 Email Template Builder</h1>
+          <div class="template-counter">
+            <i class="fas fa-folder"></i>
+            <span id="templateCount">0 Templates</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="templates-dropdown">
+            <button class="btn-primary" id="templatesDropdownBtn">
+              <i class="fas fa-folder"></i> My Templates
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <!-- This is the dropdown that should be in your HTML -->
+            <div class="dropdown-menu" id="templatesDropdown">
+              <div class="dropdown-header">
+                <h3><i class="fas fa-folder"></i> My Templates</h3>
+                <span class="count" id="dropdownTemplateCount">0 saved</span>
+              </div>
+              <div class="dropdown-templates-list" id="templatesList">
+                <!-- Content will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          <button id="downloadBtn" class="btn-secondary">
+            <i class="fas fa-download"></i> Download HTML
+          </button>
+        </div>
+      </header>
 
       <section class="builder-wrapper">
         <!-- Editor -->
         <aside class="editor">
-          <h2 class="section-title">Editor</h2>
+          <h2 class="section-title"><i class="fas fa-edit"></i> Editor</h2>
+
           <div class="form-group">
             <label for="titleInput">Title</label>
-            <input id="titleInput" type="text" placeholder="Enter title" />
+            <input
+              id="titleInput"
+              type="text"
+              placeholder="Enter email title"
+            />
           </div>
 
           <div class="form-group">
             <label for="bodyInput">Body Text</label>
-            <!-- This will be replaced by JavaScript -->
             <textarea
               id="bodyInput"
               placeholder="Enter email body"
               style="display: none"
-              <!--
-              Hide
-              the
-              original
-              textarea
-              --
-            >
-            ></textarea
-            >
+            ></textarea>
           </div>
 
           <div class="form-group">
@@ -58,11 +84,10 @@
             <input
               id="buttonLinkInput"
               type="text"
-              placeholder="Enter button link URL"
+              placeholder="https://example.com"
             />
           </div>
 
-          <!-- Select Image -->
           <div class="form-group">
             <label for="imageSelect">Select Image</label>
             <select id="imageSelect">
@@ -73,22 +98,43 @@
             </select>
           </div>
 
-          <!-- UPLOAD IMAGE — HIDDEN INITIALLY -->
           <div class="form-group" id="uploadWrapper" style="display: none">
             <label for="imageUpload">Upload Image</label>
             <input type="file" id="imageUpload" accept="image/*" />
           </div>
 
-          <div class="actions">
-            <button id="saveTemplateBtn">Save Template</button>
-            <button id="resetBtn">Reset</button>
+          <!-- Template Name Section -->
+          <div class="template-name-section">
+            <h3 class="section-title">
+              <i class="fas fa-save"></i> Save Template
+            </h3>
+            <div class="form-group">
+              <label for="templateName">Template Name</label>
+              <input
+                type="text"
+                id="templateName"
+                placeholder="Enter template name"
+                maxlength="50"
+              />
+              <small class="char-count"
+                >Characters left: <span id="charCount">50</span></small
+              >
+            </div>
+            <div class="actions">
+              <button id="saveTemplateBtn" class="btn-save">
+                <i class="fas fa-save"></i> Save Template
+              </button>
+              <button id="resetBtn" class="btn-reset">
+                <i class="fas fa-redo"></i> Reset
+              </button>
+            </div>
           </div>
         </aside>
 
         <!-- Preview -->
         <section class="preview">
-          <h2 class="section-title">Preview</h2>
-          <div class="email-preview">
+          <h2 class="section-title"><i class="fas fa-eye"></i> Preview</h2>
+          <div class="email-preview" id="emailPreview">
             <h3 class="preview-title">Your Title Here</h3>
             <img class="preview-image" src="" alt="Selected Image Preview" />
             <div class="preview-body">
@@ -101,5 +147,27 @@
     </main>
 
     <script src="js/builder.js"></script>
+    <script src="js/templateManager.js"></script>
+    <!-- Add this before closing body tag -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("templatesDropdownBtn");
+        const dropdown = document.getElementById("templatesDropdown");
+
+        if (btn && dropdown) {
+          console.log("Elements found in DOM:");
+          console.log("Button:", btn);
+          console.log("Dropdown HTML:", dropdown.outerHTML);
+
+          btn.addEventListener("click", function () {
+            console.log(
+              "Button clicked - dropdown style:",
+              dropdown.style.display
+            );
+            console.log("Dropdown classes:", dropdown.className);
+          });
+        }
+      });
+    </script>
   </body>
 </html>

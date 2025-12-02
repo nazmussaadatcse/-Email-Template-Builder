@@ -1,3 +1,6 @@
+// builder.js - Complete Email Builder with Rich Text Editor
+let uploadedImageBase64 = "";
+
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements
   const titleInput = document.getElementById("titleInput");
@@ -6,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const imageSelect = document.getElementById("imageSelect");
   const imageUpload = document.getElementById("imageUpload");
   const resetBtn = document.getElementById("resetBtn");
+  const saveTemplateBtn = document.getElementById("saveTemplateBtn");
+  const templateNameInput = document.getElementById("templateName");
+  const charCount = document.getElementById("charCount");
 
   const previewTitle = document.querySelector(".preview-title");
   const previewBody = document.querySelector(".preview-body");
@@ -14,9 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const uploadWrapper = document.getElementById("uploadWrapper");
   let removeBtn = null;
-
-  // global state
-  let uploadedImageBase64 = "";
 
   // Rich text editor state
   let richTextEditor = null;
@@ -28,13 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let linkUrlInput = null;
   let linkTextInput = null;
 
-  // placeholder
+  // ============ IMAGE FUNCTIONS ============
+
   function setPlaceholder() {
     previewImage.src = "";
-    previewImage.style.background = "#e5e7eb";
-    previewImage.style.width = "100%";
-    previewImage.style.height = "150px";
-    previewImage.style.objectFit = "cover";
+    previewImage.className = "preview-image placeholder";
     hideRemoveBtn();
   }
 
@@ -47,24 +48,14 @@ document.addEventListener("DOMContentLoaded", () => {
       removeBtn = document.createElement("button");
       removeBtn.textContent = "Remove Image";
       removeBtn.id = "removeImageBtn";
-
-      removeBtn.style.marginTop = "8px";
-      removeBtn.style.padding = "6px 12px";
-      removeBtn.style.background = "#ef4444";
-      removeBtn.style.color = "#fff";
-      removeBtn.style.border = "none";
-      removeBtn.style.borderRadius = "4px";
-      removeBtn.style.cursor = "pointer";
-      removeBtn.style.fontSize = "14px";
+      removeBtn.className = "btn-remove-image";
 
       previewImage.insertAdjacentElement("afterend", removeBtn);
-
       removeBtn.addEventListener("click", removeImage);
     }
-    removeBtn.style.display = "inline-block";
+    removeBtn.style.display = "block";
   }
 
-  // Remove image action
   function removeImage() {
     uploadedImageBase64 = "";
     imageSelect.value = "";
@@ -218,29 +209,59 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Font size - custom size in px
+    // Font size - Fixed implementation
     const fontSizeSelect = toolbar.querySelector("#fontSizeSelect");
     if (fontSizeSelect) {
       fontSizeSelect.addEventListener("change", function () {
         if (this.value) {
           const size = this.value;
-          const selection = window.getSelection();
-
-          if (selection.rangeCount > 0 && !selection.isCollapsed) {
-            // Apply font size to selected text
-            const span = document.createElement("span");
-            span.style.fontSize = size;
-            span.innerHTML = selection.toString();
-
-            const range = selection.getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(span);
-
-            // Update preview
-            updateBodyPreview();
+          
+          // Focus editor
+          if (document.activeElement !== richTextEditor) {
+            richTextEditor.focus();
           }
-
+          
+          // Save selection
+          saveSelection();
+          
+          // Apply font size using insertHTML method (more reliable)
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0 && !selection.isCollapsed) {
+            const range = selection.getRangeAt(0);
+            const selectedText = range.toString();
+            
+            if (selectedText) {
+              // Create span with font size
+              const span = document.createElement('span');
+              span.style.fontSize = size;
+              span.textContent = selectedText;
+              
+              // Delete selected content
+              range.deleteContents();
+              
+              // Insert styled span
+              range.insertNode(span);
+              
+              // Move cursor after the styled text
+              const newRange = document.createRange();
+              newRange.setStartAfter(span);
+              newRange.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(newRange);
+            }
+          } else {
+            // If no selection, just change font size for new text
+            document.execCommand("fontSize", false, "7");
+            // Apply style to the editor itself
+            richTextEditor.style.fontSize = size;
+          }
+          
+          // Update preview
+          updateBodyPreview();
           this.value = "";
+          
+          // Restore focus
+          richTextEditor.focus();
         }
       });
     }
@@ -555,7 +576,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Update preview
     if (!content || content.trim() === "" || content === "<br>") {
       previewBody.innerHTML =
-        '<span style="color: #999;">Your email body text will appear here.</span>';
+        '<span class="preview-placeholder">Your email body text will appear here.</span>';
     } else {
       previewBody.innerHTML = content;
     }
@@ -573,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateImagePreview() {
     if (uploadedImageBase64) {
       previewImage.src = uploadedImageBase64;
-      previewImage.style.background = "transparent";
+      previewImage.className = "preview-image";
       showRemoveBtn();
       uploadWrapper.style.display = "block";
     } else if (imageSelect.value) {
@@ -584,7 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       previewImage.src = images[imageSelect.value];
-      previewImage.style.background = "transparent";
+      previewImage.className = "preview-image";
       uploadWrapper.style.display = "block";
       showRemoveBtn();
     } else {
@@ -598,6 +619,35 @@ document.addEventListener("DOMContentLoaded", () => {
   [titleInput, buttonTextInput, buttonLinkInput].forEach((el) => {
     el.addEventListener("input", updatePreview);
   });
+
+  // Character count for template name
+  if (templateNameInput && charCount) {
+    templateNameInput.addEventListener("input", function() {
+      const remaining = 50 - this.value.length;
+      charCount.textContent = remaining;
+      charCount.style.color = remaining < 10 ? "#ef4444" : "#6b7280";
+    });
+  }
+
+  // Save template button
+  if (saveTemplateBtn) {
+    saveTemplateBtn.addEventListener("click", function() {
+      const name = templateNameInput.value.trim();
+      
+      if (!name) {
+        alert("Please enter a template name");
+        templateNameInput.focus();
+        return;
+      }
+      
+      // Get template data and save it
+      const templateData = getCurrentTemplateData();
+      if (window.templateManager && window.templateManager.saveTemplate) {
+        window.templateManager.saveTemplate(templateData, name);
+        templateNameInput.value = ""; // Clear the input after saving
+      }
+    });
+  }
 
   imageSelect.addEventListener("change", () => {
     uploadedImageBase64 = "";
@@ -622,6 +672,7 @@ document.addEventListener("DOMContentLoaded", () => {
     titleInput.value = "";
     buttonTextInput.value = "";
     buttonLinkInput.value = "";
+    templateNameInput.value = "";
 
     // Reset image inputs
     imageSelect.value = "";
@@ -641,6 +692,18 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePreview();
   });
 
+  // Helper function to get current template data
+  function getCurrentTemplateData() {
+    return {
+      title: titleInput.value,
+      body: hiddenTextarea ? hiddenTextarea.value : "",
+      buttonText: buttonTextInput.value,
+      buttonLink: buttonLinkInput.value,
+      imageSelect: imageSelect.value,
+      uploadedImageBase64: uploadedImageBase64,
+    };
+  }
+
   // ============ INITIALIZATION ============
 
   // Initialize rich text editor
@@ -649,4 +712,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Set initial state
   setPlaceholder();
   updatePreview();
+
+  // Make functions available globally for template manager
+  window.uploadedImageBase64 = uploadedImageBase64;
+  window.updatePreview = updatePreview;
+  window.updateBodyPreview = updateBodyPreview;
+  window.getEditorContent = () => {
+    if (richTextEditor) return richTextEditor.innerHTML;
+    return "";
+  };
+  window.setEditorContent = (content) => {
+    if (richTextEditor) {
+      richTextEditor.innerHTML = content;
+      updateBodyPreview();
+    }
+  };
+  window.getCurrentTemplateData = getCurrentTemplateData;
 });
