@@ -45,8 +45,34 @@ class TemplateManager {
     }
   }
 
-  // Save a new template
+  // Save a new template or update existing one
   saveTemplate(templateData, name) {
+    if (this.currentTemplateId) {
+      // Editing existing template
+      const index = this.templates.findIndex(
+        (t) => t.id === this.currentTemplateId
+      );
+      if (index !== -1) {
+        this.templates[index].name = name || this.templates[index].name;
+        this.templates[index].date = new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        this.templates[index].data = templateData;
+        this.saveTemplates();
+        this.renderTemplates();
+        this.showNotification(
+          `Template "${this.templates[index].name}" updated successfully!`
+        );
+        this.currentTemplateId = null; // reset after saving
+        return;
+      }
+    }
+
+    // Otherwise, create new template
     const template = {
       id: Date.now().toString(),
       name: name || `Template ${this.templates.length + 1}`,
