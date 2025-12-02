@@ -1,50 +1,55 @@
-const PreviewActions = (function () {
-  let titleEl, bodyEl, buttonEl, imageEl;
-  let uploadedImage = "";
+(function () {
+  const imageSelect = document.getElementById("imageSelect");
+  const imageUpload = document.getElementById("imageUpload");
+  const previewImage = document.querySelector(".preview-image");
 
-  function init() {
-    titleEl = document.querySelector(".preview-title");
-    bodyEl = document.querySelector(".preview-body");
-    buttonEl = document.querySelector(".preview-button");
-    imageEl = document.querySelector(".preview-image");
-  }
+  let uploadedImageBase64 = "";
+  let defaultWidth = 400;
+  let defaultHeight = 200;
 
-  function updateTitle(val) {
-    if (titleEl) titleEl.textContent = val || "Your Title Here";
-  }
-  function updateBody(val) {
-    if (bodyEl)
-      bodyEl.textContent = val || "Your email body text will appear here.";
-  }
-  function updateButtonText(val) {
-    if (buttonEl) buttonEl.textContent = val || "Button";
-  }
-  function updateButtonLink(val) {
-    if (buttonEl) buttonEl.href = val || "#";
-  }
-  function updateImageSrc(src) {
-    if (imageEl) imageEl.src = src || "";
-    uploadedImage = src || "";
+  // Initialize placeholder
+  function setPlaceholder() {
+    previewImage.src = "";
+    previewImage.style.width = defaultWidth + "px";
+    previewImage.style.height = defaultHeight + "px";
+    previewImage.style.objectFit = "cover";
+    previewImage.style.background =
+      "#e5e7eb url('https://via.placeholder.com/400x200?text=Preview') center center no-repeat";
   }
 
-  function getLastHtml() {
-    return `
-      <div style="text-align:center;">
-        <h3>${titleEl.textContent}</h3>
-        <img src="${uploadedImage}" style="max-width:100%;border-radius:6px;" />
-        <p>${bodyEl.textContent}</p>
-        <a href="${buttonEl.href}" target="_blank">${buttonEl.textContent}</a>
-      </div>
-    `;
+  setPlaceholder();
+
+  function updateImagePreview() {
+    if (uploadedImageBase64) {
+      previewImage.src = uploadedImageBase64;
+      previewImage.style.background = "transparent";
+    } else if (imageSelect.value) {
+      const images = {
+        img1: "https://via.placeholder.com/400x200?text=Image+1",
+        img2: "https://via.placeholder.com/400x200?text=Image+2",
+        img3: "https://via.placeholder.com/400x200?text=Image+3",
+      };
+      previewImage.src = images[imageSelect.value];
+      previewImage.style.background = "transparent";
+    } else {
+      setPlaceholder();
+    }
   }
 
-  return {
-    init,
-    updateTitle,
-    updateBody,
-    updateButtonText,
-    updateButtonLink,
-    updateImageSrc,
-    getLastHtml,
-  };
+  // Events
+  imageSelect.addEventListener("change", () => {
+    uploadedImageBase64 = ""; // clear uploaded if dropdown changes
+    updateImagePreview();
+  });
+
+  imageUpload.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      uploadedImageBase64 = evt.target.result;
+      updateImagePreview();
+    };
+    reader.readAsDataURL(file);
+  });
 })();
